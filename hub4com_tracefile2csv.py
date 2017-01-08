@@ -2,7 +2,6 @@ import collections
 import datetime
 import pathlib
 import re
-import sys
 
 
 entry = collections.namedtuple('Entry',
@@ -71,7 +70,11 @@ def traffic_iter(entry_iter_inst, time_diff_tolerance=None):
 
 
 if __name__ == '__main__':
-  if len(sys.argv) != 2:
+
+  import csv
+  import sys
+
+  if len(sys.argv) != 3:
     show_usage = True
   elif not list(pathlib.Path().glob(sys.argv[1])):
     show_usage = True
@@ -79,11 +82,14 @@ if __name__ == '__main__':
     show_usage = False
 
   if show_usage:
-    print('USAGE: hub4com_tracefile2csv.py <logfile(s)>')
+    print('USAGE: hub4com_tracefile2csv.py '
+        '<logfile(s)> <outfile>')
   else:
     globstr = sys.argv[1]
     geit = glob_entry_iter(globstr)
-    trit = traffic_iter(geit, 1)
-    tr = list(trit)
-    for x in tr:
-      print(x[:-1], len(x.bytes))
+    trit = traffic_iter(geit, 0.05)
+    with open(sys.argv[2], 'w', newline='') as csvfile:
+      writer = csv.writer(csvfile, dialect='excel')
+      for e in trit:
+        datastr = ' '.join('{:0>2X}'.format(x) for x in e.bytes)
+        writer.writerow(e[:-1] + (datastr,))
