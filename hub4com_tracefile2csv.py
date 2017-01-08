@@ -1,8 +1,9 @@
 import collections
 import datetime
-import itertools
 import pathlib
 import re
+import sys
+
 
 entry = collections.namedtuple('Entry',
     ('time', 'source', 'dest', 'bytes'))
@@ -70,11 +71,19 @@ def traffic_iter(entry_iter_inst, time_diff_tolerance=None):
 
 
 if __name__ == '__main__':
-  globstr = r'..\data-meteor2016\sicomtrace\day1\finish.log'
-  #globstr = r'..\data-oevb2016\sicomtrace\finish*.log'
-  geit = glob_entry_iter(globstr)
-  trit = traffic_iter(geit, 1)
-  tr = list(trit)
+  if len(sys.argv) != 2:
+    show_usage = True
+  elif not list(pathlib.Path().glob(sys.argv[1])):
+    show_usage = True
+  else:
+    show_usage = False
 
-  for x in tr:
-    print(x[:-1], len(x.bytes))
+  if show_usage:
+    print('USAGE: hub4com_tracefile2csv.py <logfile(s)>')
+  else:
+    globstr = sys.argv[1]
+    geit = glob_entry_iter(globstr)
+    trit = traffic_iter(geit, 1)
+    tr = list(trit)
+    for x in tr:
+      print(x[:-1], len(x.bytes))
