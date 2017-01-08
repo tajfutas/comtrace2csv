@@ -51,8 +51,8 @@ def traffic_iter(entry_iter_inst, time_diff_tolerance=None):
   if time_diff_tolerance is None:
     time_diff_tolerance = datetime.timedelta(0)
   elif not isinstance(time_diff_tolerance, datetime.timedelta):
-    time_diff_tolerance = datetime.timedelta(0,
-        time_diff_tolerance)
+    time_diff_tolerance = datetime.timedelta(
+        milliseconds=time_diff_tolerance)
   ref_entry = next(entry_iter_inst)
   ref_data = ref_entry.bytes
   for e in entry_iter_inst:
@@ -83,17 +83,17 @@ if __name__ == '__main__':
 
   if show_usage:
     print('USAGE: hub4com_tracefile2csv.py '
-        '<logfile(s)> <outfile> [time_diff_tolerance]')
+        '<logfile(s)> <outfile> [time_diff_tolerance_in_ms]')
   else:
     if len(sys.argv) == 4:
-      time_diff_tolerance = float(sys.argv[3])
+      time_diff_tolerance = int(sys.argv[3])
     else:
       time_diff_tolerance = 0
     globstr = sys.argv[1]
     geit = glob_entry_iter(globstr)
     trit = traffic_iter(geit, time_diff_tolerance)
     with open(sys.argv[2], 'w', newline='') as csvfile:
-      writer = csv.writer(csvfile, dialect='excel')
+      writer = csv.writer(csvfile)
       for e in trit:
         datastr = ' '.join('{:0>2X}'.format(x) for x in e.bytes)
         writer.writerow(e[:-1] + (datastr,))
