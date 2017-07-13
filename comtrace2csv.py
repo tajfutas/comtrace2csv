@@ -10,7 +10,7 @@ ENTRY_RESTR = (r'^(\d{4}/[01]\d/[0-3]\d '
     r'[0-2]\d:[0-5]\d:[0-5]\d\.\d+) '
     r'([^\r\n]+?)(<?)-\(trace\)-(>?)([^\r\n]*?): '
     r'MSG_LINE_DATA\s{\[(\d+)\]:(.*?)}$')
-entry_reobj = re.compile(ENTRY_RESTR,  re.MULTILINE | re.DOTALL)
+entry_reobj = re.compile(ENTRY_RESTR, re.MULTILINE | re.DOTALL)
 
 
 # http://stackoverflow.com/a/312464/2334951
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     show_usage = False
 
   if show_usage:
-    print('USAGE: hub4com_tracefile2csv.py '
+    print('USAGE: comtrace2csv.py '
         '<logfile(s)> <outfile> [time_diff_tolerance_in_ms]')
   else:
     if len(sys.argv) == 4:
